@@ -1281,6 +1281,8 @@ static const struct attribute_group *zram_disk_attr_groups[] = {
 	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
 	zram->meta = NULL;
 	zram->max_comp_streams = 1;
+
+	pr_info("Added device: %s\n", zram->disk->disk_name);
 	return 0;
 
 out_free_disk:
@@ -1297,26 +1299,13 @@ out_free_dev:
 
 static void zram_remove(struct zram *zram)
 {
-<<<<<<< HEAD
-	struct zram *zram;
-	unsigned int i;
-
-	for (i = 0; i < nr; i++) {
-		zram = &zram_devices[i];
-		/*
-		 * Remove sysfs first, so no one will perform a disksize
-		 * store while we destroy the devices
-		 */
-		sysfs_remove_group(&disk_to_dev(zram->disk)->kobj,
-				&zram_disk_attr_group);
-=======
+	pr_info("Removed device: %s\n", zram->disk->disk_name);
 	/*
 	 * Remove sysfs first, so no one will perform a disksize
 	 * store while we destroy the devices
 	 */
 	sysfs_remove_group(&disk_to_dev(zram->disk)->kobj,
 			&zram_disk_attr_group);
->>>>>>> 0d83cf3857b4... [BACKPORT] zram: use idr instead of `zram_devices' array
 
 	zram_reset_device(zram);
 	idr_remove(&zram_index_idr, zram->disk->first_minor);
@@ -1337,7 +1326,6 @@ static void destroy_devices(void)
 	idr_for_each(&zram_index_idr, &zram_remove_cb, NULL);
 	idr_destroy(&zram_index_idr);
 	unregister_blkdev(zram_major, "zram");
-	pr_info("Destroyed device(s)\n");
 }
 
 static int __init zram_init(void)
