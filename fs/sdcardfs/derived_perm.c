@@ -361,7 +361,7 @@ int need_graft_path(struct dentry *dentry)
 	struct qstr obb = QSTR_LITERAL("obb");
 
 	if (!sbi->options.unshared_obb &&
-			parent_info->data->perm == PERM_ANDROID &&
+                        parent_info->data->perm == PERM_ANDROID &&
 			qstr_case_eq(&dentry->d_name, &obb)) {
 
 		/* /Android/obb is the base obbpath of DERIVED_UNIFIED */
